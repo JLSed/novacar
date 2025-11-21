@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Miss_Fajardose, Oi, Poppins } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const oi = Oi({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-oi",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  weight: ["400", "600", "700", "900"],
   subsets: ["latin"],
+  variable: "--font-poppins",
+});
+
+const missFajardose = Miss_Fajardose({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-miss-fajardose",
 });
 
 export const metadata: Metadata = {
@@ -23,12 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`dark [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${oi.variable} ${poppins.variable} ${missFajardose.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }
