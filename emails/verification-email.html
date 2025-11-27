@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your Email - NovaCar</title>
+    <style>
+      /* Reset styles */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Container */
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #0a0a0a;
+        color: #f5f5f5;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+        padding: 40px 20px;
+        text-align: center;
+        border-bottom: 2px solid #ff7724;
+      }
+
+      .logo {
+        font-family: "Georgia", serif;
+        font-size: 48px;
+        color: #ff7724;
+        margin: 0;
+        letter-spacing: 2px;
+        font-style: italic;
+      }
+
+      /* Content */
+      .content {
+        padding: 40px 30px;
+      }
+
+      .greeting {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #f5f5f5;
+      }
+
+      .greeting .highlight {
+        color: #ff206e;
+      }
+
+      .message {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #a1a1aa;
+        margin-bottom: 30px;
+      }
+
+      /* Button */
+      .button-container {
+        text-align: center;
+        margin: 40px 0;
+      }
+
+      .verify-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff7724 0%, #ff9447 100%);
+        color: #ffffff;
+        text-decoration: none;
+        padding: 16px 48px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 12px rgba(255, 119, 36, 0.3);
+      }
+
+      .verify-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(255, 119, 36, 0.4);
+      }
+
+      /* Info Box */
+      .info-box {
+        background-color: #18181b;
+        border: 1px solid #27272a;
+        border-left: 4px solid #ff206e;
+        padding: 20px;
+        margin: 30px 0;
+        border-radius: 8px;
+      }
+
+      .info-box p {
+        margin: 0;
+        font-size: 14px;
+        color: #a1a1aa;
+      }
+
+      /* Alternative Link */
+      .alternative-link {
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid #27272a;
+      }
+
+      .alternative-link p {
+        font-size: 14px;
+        color: #71717a;
+        margin-bottom: 10px;
+      }
+
+      .link-text {
+        word-break: break-all;
+        color: #ff7724;
+        font-size: 12px;
+        background-color: #18181b;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #27272a;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #09090b;
+        padding: 30px;
+        text-align: center;
+        border-top: 1px solid #27272a;
+      }
+
+      .footer p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #71717a;
+      }
+
+      .footer a {
+        color: #ff7724;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Security Notice */
+      .security-notice {
+        background-color: #18181b;
+        border: 1px solid #27272a;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .security-notice p {
+        margin: 0;
+        font-size: 13px;
+        color: #a1a1aa;
+      }
+
+      /* Responsive */
+      @media only screen and (max-width: 600px) {
+        .content {
+          padding: 30px 20px;
+        }
+
+        .logo {
+          font-size: 36px;
+        }
+
+        .greeting {
+          font-size: 20px;
+        }
+
+        .verify-button {
+          padding: 14px 36px;
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body style="background-color: #0a0a0a">
+    <div class="email-container">
+      <!-- Header -->
+      <div class="header">
+        <h1 class="logo">NovaCar</h1>
+        <p style="margin: 10px 0 0 0; color: #a1a1aa; font-size: 14px">
+          Premium Sports Cars & JDM Legends
+        </p>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <h2 class="greeting">
+          Welcome to <span class="highlight">NovaCar</span>, {{ .Name }}!
+        </h2>
+
+        <p class="message">
+          Thank you for signing up! We're excited to have you join our community
+          of automotive enthusiasts. To get started and access all features,
+          please verify your email address.
+        </p>
+
+        <!-- CTA Button -->
+        <div class="button-container">
+          <a href="{{ .ConfirmationURL }}" class="verify-button">
+            Verify Your Email Address
+          </a>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+          <p>
+            <strong>⏰ This link will expire in 24 hours.</strong><br />
+            If you didn't create an account with NovaCar, you can safely ignore
+            this email.
+          </p>
+        </div>
+
+        <!-- What's Next -->
+        <div style="margin-top: 40px">
+          <h3 style="color: #ff7724; font-size: 18px; margin-bottom: 15px">
+            What's Next?
+          </h3>
+          <ul style="color: #a1a1aa; line-height: 1.8; padding-left: 20px">
+            <li>
+              Browse our exclusive collection of sports cars and JDM legends
+            </li>
+            <li>Save your favorite vehicles for later</li>
+            <li>Get notified about new arrivals and special deals</li>
+            <li>Access detailed specifications and high-quality images</li>
+          </ul>
+        </div>
+
+        <!-- Alternative Link -->
+        <div class="alternative-link">
+          <p>
+            If the button above doesn't work, copy and paste this link into your
+            browser:
+          </p>
+          <div class="link-text">{{ .ConfirmationURL }}</div>
+        </div>
+
+        <!-- Security Notice -->
+        <div class="security-notice">
+          <p>
+            🔒 <strong>Security Tip:</strong> NovaCar will never ask for your
+            password via email. If you receive a suspicious email, please report
+            it to our security team.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p style="margin-bottom: 15px; font-weight: 600; color: #f5f5f5">
+          NovaCar
+        </p>
+        <p>
+          Need help?
+          <a href="mailto:support@novacar.com">Contact Support</a>
+        </p>
+        <p style="margin-top: 20px; font-size: 12px">
+          © 2025 NovaCar. All rights reserved.<br />
+          This email was sent to {{ .Email }}
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

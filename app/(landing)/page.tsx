@@ -9,10 +9,70 @@ import Image from "next/image";
 import Link from "next/link";
 import { REVIEWS } from "@/lib/constants/reviews";
 import Footer from "@/components/footer";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useLoginModal } from "@/lib/contexts/login-modal-context";
 
 export default function Home() {
+  const { showLogin, setShowLogin } = useLoginModal();
+  const loginModalRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (showLogin && loginModalRef.current) {
+      gsap.fromTo(
+        loginModalRef.current,
+        {
+          scale: 0,
+          opacity: 0,
+          rotation: -10,
+        },
+        {
+          scale: 1,
+          opacity: 1,
+          rotation: 0,
+          duration: 0.5,
+          ease: "back.out(1.7)",
+        }
+      );
+    }
+  }, [showLogin]);
+
+  const handleCloseLogin = () => {
+    if (loginModalRef.current) {
+      gsap.to(loginModalRef.current, {
+        scale: 0,
+        opacity: 0,
+        rotation: 10,
+        duration: 0.3,
+        ease: "back.in(1.7)",
+        onComplete: () => setShowLogin(false),
+      });
+    }
+  };
+
   return (
     <div className="bg-background flex flex-col items-center justify-center gap-large max-md:gap-medium relative overflow-hidden">
+      {showLogin && (
+        <div
+          onClick={handleCloseLogin}
+          className="fixed inset-0 z-50 flex justify-center items-center bg-background/50 backdrop-blur-lg"
+        >
+          <div
+            ref={loginModalRef}
+            onClick={(e) => e.stopPropagation()}
+            className="relative"
+          >
+            <button
+              onClick={handleCloseLogin}
+              className="absolute -top-4 -right-4 z-10 w-10 h-10 rounded-full bg-primary text-foreground flex items-center justify-center hover:scale-110 transition-transform"
+            >
+              ✕
+            </button>
+            <LoginForm />
+          </div>
+        </div>
+      )}
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
         <AspectRatio ratio={16 / 9}>
@@ -24,9 +84,7 @@ export default function Home() {
           />
         </AspectRatio>
       </div>
-
       {/* Glowing Effects */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-accent2/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 left-1/3 w-[700px] h-[700px] bg-accent2/5 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-0 right-1/3 w-[550px] h-[550px] bg-primary/5 rounded-full blur-[110px] pointer-events-none"></div>
@@ -43,7 +101,7 @@ export default function Home() {
           <button className="shining_button w-full">BROWSE &#8594;</button>
         </Link>
       </section>
-      <section className="max-w-desktop flex w-full justify-between z-20">
+      <section className="max-w-desktop grid grid-cols-8 w-full gap-small place-items-center max-md:grid-cols-2 ">
         <LogoCard image_path="/toyota_logo.png" />
         <LogoCard image_path="/nissan_logo.png" />
         <LogoCard image_path="/bmw_logo.png" />
@@ -74,7 +132,7 @@ export default function Home() {
             <h4 className="text-accent2 z-10">Listed Cars</h4>
           </div>
         </div>
-        <div className="pt-16 flex flex-col gap-6 items-center justify-center w-full">
+        <div className="pt-32 flex flex-col gap-6 items-center justify-center w-full">
           <h6 className="text-center max-w-[582px] max-md:max-w-[85%]">
             Unleash the thrill. Discover a curated collection of sports cars and
             iconic JDM legends.
@@ -104,14 +162,14 @@ export default function Home() {
           model_name="Skyline"
         />
       </section>
-      <section className="max-w-desktop w-full flex flex-col gap-small">
+      <section className="max-w-desktop w-full flex flex-col gap-small max-md:px-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-primary">
             <span className="text-accent2">Customer</span> Feedback
           </h2>
           <h6>Testimonies from our clients.</h6>
         </div>
-        <div className="grid grid-cols-3  gap-4">
+        <div className="grid grid-cols-3 max-md:grid-cols-1 gap-4">
           {REVIEWS.map((review, index) => (
             <ReviewCard
               key={index}

@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${oi.variable} ${poppins.variable} ${missFajardose.variable}`}
+      className={`dark ${oi.variable} ${poppins.variable} ${missFajardose.variable}`}
     >
       <body>{children}</body>
     </html>

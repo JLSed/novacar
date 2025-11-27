@@ -1,7 +1,11 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useLoginModal } from "@/lib/contexts/login-modal-context";
 
 const LandingNavbar = () => {
+  const { setShowLogin } = useLoginModal();
+
   return (
     <nav className="sticky navbar_background flex justify-between items-center p-xsmall top-0 z-50">
       <div className="cursor-pointer ">
@@ -20,12 +24,15 @@ const LandingNavbar = () => {
         <button className="hover:scale-105 text-accent2 p-xsmall">
           <Link href={"/browse"}>ABOUT</Link>
         </button>
-        <button className="hover:scale-105 text-primary p-xsmall cursor-pointer">
+        <button
+          onClick={() => setShowLogin(true)}
+          className="hover:scale-105 text-primary p-xsmall cursor-pointer"
+        >
           LOG IN
         </button>
-        <button className="shining_button">
-          <Link href={""}>SIGN UP</Link>
-        </button>
+        <Link href={"/signup"}>
+          <button className="shining_button">SIGN UP</button>
+        </Link>
       </div>
     </nav>
   );
