@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+"use client";
 import "./globals.css";
 import { Miss_Fajardose, Oi, Poppins } from "next/font/google";
+import { AuthProvider } from "@/lib/contexts/auth-context";
 
 const oi = Oi({
   weight: "400",
@@ -20,11 +21,6 @@ const missFajardose = Miss_Fajardose({
   variable: "--font-miss-fajardose",
 });
 
-export const metadata: Metadata = {
-  title: "NovaCar",
-  description: "e commerce platform for sports cars and JDM legends",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,7 +31,9 @@ export default function RootLayout({
       lang="en"
       className={`dark ${oi.variable} ${poppins.variable} ${missFajardose.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

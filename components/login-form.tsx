@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export function LoginForm({
   className,
@@ -35,11 +36,23 @@ export function LoginForm({
     setIsLoading(true);
 
     try {
-      // Simulate login - just redirect to home page
-      // You can add your own logic here
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call
+      const client = createClient();
+      const { data, error: signInError } = await client.auth.signInWithPassword(
+        {
+          email,
+          password,
+        }
+      );
 
-      // For demo purposes, redirect to home
+      if (signInError) {
+        throw new Error(signInError.message);
+      }
+
+      if (!data.user) {
+        throw new Error("Login failed");
+      }
+
+      // Successfully logged in, redirect to home
       router.push("/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

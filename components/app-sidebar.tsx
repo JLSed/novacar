@@ -13,25 +13,31 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
 
-const data = {
-  user: {
-    name: "Admin User",
-    email: "admin@novacar.com",
-    avatar: "/avatars/admin.jpg",
+const navItems = [
+  {
+    title: "Add Car",
+    url: "/dashboard/add-car",
+    icon: IconPlus,
   },
-  navMain: [
-    {
-      title: "Add Car",
-      url: "/dashboard/add-car",
-      icon: IconPlus,
-    },
-  ],
-};
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
+  const userData = {
+    name:
+      user?.user_metadata?.first_name && user?.user_metadata?.last_name
+        ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+        : "Admin User",
+    email: user?.email || "admin@novacar.com",
+    avatar: "",
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -54,10 +60,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );

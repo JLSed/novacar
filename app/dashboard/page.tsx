@@ -28,8 +28,21 @@ import {
   IconShoppingCart,
   IconTrendingUp,
 } from "@tabler/icons-react";
+import useAuth from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const { user, loading } = useAuth();
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   // Mock data - replace with actual data from your database
   const stats = {
     carsListed: 236,

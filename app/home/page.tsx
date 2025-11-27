@@ -2,13 +2,33 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, LogOut } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
+import { use, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function HomePage() {
   const router = useRouter();
+  const { user, loading, isAdmin } = useAuth();
+  const supabase = createClient();
+
+  useEffect(() => {
+    if (isAdmin) {
+      router.push("/dashboard");
+    }
+  }, [isAdmin, user, router, supabase.auth]);
 
   const handleLogout = async () => {
+    await supabase.auth.signOut();
     router.push("/");
   };
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">

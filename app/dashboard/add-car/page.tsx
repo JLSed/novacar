@@ -36,6 +36,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AddCarPage() {
   const router = useRouter();
@@ -100,6 +101,16 @@ export default function AddCarPage() {
     try {
       let imageUrls: string[] = [];
 
+      // Get current session token
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error("No active session");
+      }
+
       // Upload images first if any
       if (imageFiles.length > 0) {
         setIsUploading(true);
@@ -110,6 +121,9 @@ export default function AddCarPage() {
 
         const uploadResponse = await fetch("/api/upload", {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: uploadFormData,
         });
 
@@ -128,6 +142,7 @@ export default function AddCarPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           ...formData,
@@ -534,7 +549,7 @@ export default function AddCarPage() {
                       Pricing
                     </h3>
                     <div className="space-y-2">
-                      <Label htmlFor="price">Price (USD) *</Label>
+                      <Label htmlFor="price">Price (PHP) *</Label>
                       <Input
                         id="price"
                         name="price"
