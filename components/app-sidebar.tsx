@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { IconPlus } from "@tabler/icons-react";
+import { IconPlus, IconMessageQuestion } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -23,6 +23,11 @@ const navItems = [
     title: "Add Car",
     url: "/dashboard/add-car",
     icon: IconPlus,
+  },
+  {
+    title: "Inquiries",
+    url: "/dashboard/inquiries",
+    icon: IconMessageQuestion,
   },
 ];
 
