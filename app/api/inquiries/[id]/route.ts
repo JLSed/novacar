@@ -51,15 +51,14 @@ export async function GET(
         )
       `
       )
-      .eq("id", id)
-      .single();
+      .eq("id", id);
 
     // If not admin, only allow viewing own inquiries
     if (!isAdmin) {
       query = query.eq("user_id", user.id);
     }
 
-    const { data, error } = await query;
+    const { data, error } = await query.single();
 
     if (error) {
       console.error("Database fetch error:", error);
