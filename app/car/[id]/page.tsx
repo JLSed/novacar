@@ -10,11 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   IconBookmark,
   IconBookmarkFilled,
@@ -237,7 +233,7 @@ export default function CarViewPage() {
           <Card>
             <CardContent className="p-4">
               {/* Main Image - Clickable for fullscreen */}
-              <div 
+              <div
                 className="relative aspect-4/3 rounded-lg overflow-hidden mb-4 cursor-pointer group"
                 onClick={() => {
                   setFullscreenIndex(selectedImage);
@@ -317,7 +313,8 @@ export default function CarViewPage() {
         <Dialog open={fullscreenOpen} onOpenChange={setFullscreenOpen}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 bg-black/95 border-none">
             <DialogTitle className="sr-only">
-              {car.brand} {car.model} - Image {fullscreenIndex + 1} of {images.length}
+              {car.brand} {car.model} - Image {fullscreenIndex + 1} of{" "}
+              {images.length}
             </DialogTitle>
             <div className="relative w-full h-[90vh] flex items-center justify-center">
               {/* Close Button */}
@@ -341,7 +338,11 @@ export default function CarViewPage() {
                   variant="ghost"
                   size="icon"
                   className="absolute left-4 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12"
-                  onClick={() => setFullscreenIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                  onClick={() =>
+                    setFullscreenIndex((prev) =>
+                      prev === 0 ? images.length - 1 : prev - 1
+                    )
+                  }
                 >
                   <IconChevronLeft className="h-8 w-8" />
                 </Button>
@@ -351,7 +352,9 @@ export default function CarViewPage() {
               <div className="relative w-full h-full flex items-center justify-center p-8">
                 <Image
                   src={images[fullscreenIndex]}
-                  alt={`${car.brand} ${car.model} - Image ${fullscreenIndex + 1}`}
+                  alt={`${car.brand} ${car.model} - Image ${
+                    fullscreenIndex + 1
+                  }`}
                   fill
                   className="object-contain"
                   unoptimized
@@ -364,7 +367,11 @@ export default function CarViewPage() {
                   variant="ghost"
                   size="icon"
                   className="absolute right-4 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12"
-                  onClick={() => setFullscreenIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                  onClick={() =>
+                    setFullscreenIndex((prev) =>
+                      prev === images.length - 1 ? 0 : prev + 1
+                    )
+                  }
                 >
                   <IconChevronRight className="h-8 w-8" />
                 </Button>
