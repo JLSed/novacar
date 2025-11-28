@@ -1,5 +1,4 @@
 "use client";
-import { LoginForm } from "@/components/login-form";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 import LandingCarCard from "@/components/ui/landingcar_card";
@@ -9,70 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { REVIEWS } from "@/lib/constants/reviews";
 import Footer from "@/components/footer";
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { useLoginModal } from "@/lib/contexts/login-modal-context";
 
 export default function Home() {
-  const { showLogin, setShowLogin } = useLoginModal();
-  const loginModalRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (showLogin && loginModalRef.current) {
-      gsap.fromTo(
-        loginModalRef.current,
-        {
-          scale: 0,
-          opacity: 0,
-          rotation: -10,
-        },
-        {
-          scale: 1,
-          opacity: 1,
-          rotation: 0,
-          duration: 0.5,
-          ease: "back.out(1.7)",
-        }
-      );
-    }
-  }, [showLogin]);
-
-  const handleCloseLogin = () => {
-    if (loginModalRef.current) {
-      gsap.to(loginModalRef.current, {
-        scale: 0,
-        opacity: 0,
-        rotation: 10,
-        duration: 0.3,
-        ease: "back.in(1.7)",
-        onComplete: () => setShowLogin(false),
-      });
-    }
-  };
-
   return (
     <div className="bg-background flex flex-col items-center justify-center gap-large max-md:gap-medium relative overflow-hidden">
-      {showLogin && (
-        <div
-          onClick={handleCloseLogin}
-          className="fixed inset-0 z-50 flex justify-center items-center bg-background/50 backdrop-blur-lg"
-        >
-          <div
-            ref={loginModalRef}
-            onClick={(e) => e.stopPropagation()}
-            className="relative"
-          >
-            <button
-              onClick={handleCloseLogin}
-              className="absolute -top-4 -right-4 z-10 w-10 h-10 rounded-full bg-primary text-foreground flex items-center justify-center hover:scale-110 transition-transform"
-            >
-              ✕
-            </button>
-            <LoginForm />
-          </div>
-        </div>
-      )}
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
         <AspectRatio ratio={16 / 9}>

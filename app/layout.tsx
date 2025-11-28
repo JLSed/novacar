@@ -1,7 +1,6 @@
 "use client";
 import "./globals.css";
 import { Miss_Fajardose, Oi, Poppins } from "next/font/google";
-import { AuthProvider } from "@/lib/contexts/auth-context";
 import { Toaster } from "sonner";
 
 const oi = Oi({
@@ -33,7 +32,7 @@ export default function RootLayout({
       className={`dark ${oi.variable} ${poppins.variable} ${missFajardose.variable}`}
     >
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        {children}
         <Toaster richColors position="top-right" />
       </body>
     </html>

@@ -52,8 +52,18 @@ export function LoginForm({
         throw new Error("Login failed");
       }
 
-      // Successfully logged in, redirect to home
-      router.push("/home");
+      // Check if user is admin to redirect appropriately
+      const { data: userData } = await client
+        .from("users")
+        .select("access_level")
+        .eq("user_id", data.user.id)
+        .single();
+
+      const isAdmin = userData?.access_level === 0;
+
+      // Refresh to update server-side session, then redirect
+      router.refresh();
+      router.push(isAdmin ? "/dashboard" : "/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

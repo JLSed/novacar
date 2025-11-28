@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { HomeNav } from "@/components/home-nav";
 import { CarCard } from "@/components/car-card";
@@ -26,7 +26,7 @@ interface Car {
 export default function HomePage() {
   const router = useRouter();
   const { user, loading, isAdmin } = useAuth();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [bookmarkedCars, setBookmarkedCars] = useState<Car[]>([]);
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
@@ -125,7 +125,7 @@ export default function HomePage() {
     router.push(`/car/${carId}`);
   };
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
