@@ -20,6 +20,7 @@ interface Car {
   transmission: string;
   price: number;
   condition: string;
+  status?: string;
   image_urls?: string[];
 }
 
@@ -165,6 +166,7 @@ export default function HomePage() {
                   isBookmarked={true}
                   onBookmarkToggle={handleBookmarkToggle}
                   onViewDetails={handleViewDetails}
+                  showStatus={true}
                 />
               ))}
             </div>
@@ -205,6 +207,7 @@ export default function HomePage() {
                   isBookmarked={bookmarkedIds.has(car.id)}
                   onBookmarkToggle={handleBookmarkToggle}
                   onViewDetails={handleViewDetails}
+                  showStatus={true}
                 />
               ))}
             </div>

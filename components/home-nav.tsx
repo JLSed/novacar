@@ -49,7 +49,7 @@ export function HomeNav() {
         <div className="flex items-center gap-4 flex-1 max-w-2xl mx-4">
           <Button
             variant="ghost"
-            onClick={() => router.push("/home")}
+            onClick={() => router.push("/browse")}
             className="hidden md:flex"
           >
             Browse Cars

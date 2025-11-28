@@ -11,12 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   IconBookmark,
   IconBookmarkFilled,
@@ -31,6 +29,9 @@ import {
   IconSteeringWheel,
   IconNumber,
   IconCar,
+  IconChevronLeft,
+  IconChevronRight,
+  IconX,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { OrderSheet } from "@/components/order-sheet";
@@ -72,6 +73,8 @@ export default function CarViewPage() {
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [fullscreenOpen, setFullscreenOpen] = useState(false);
+  const [fullscreenIndex, setFullscreenIndex] = useState(0);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -233,16 +236,27 @@ export default function CarViewPage() {
           {/* Car Images Section */}
           <Card>
             <CardContent className="p-4">
-              {/* Main Image */}
-              <div className="relative aspect-4/3 rounded-lg overflow-hidden mb-4">
+              {/* Main Image - Clickable for fullscreen */}
+              <div 
+                className="relative aspect-4/3 rounded-lg overflow-hidden mb-4 cursor-pointer group"
+                onClick={() => {
+                  setFullscreenIndex(selectedImage);
+                  setFullscreenOpen(true);
+                }}
+              >
                 <Image
                   src={images[selectedImage]}
                   alt={`${car.brand} ${car.model}`}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform group-hover:scale-105"
                   priority
                   unoptimized
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                  <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm bg-black/50 px-3 py-1 rounded-full">
+                    Click to enlarge
+                  </span>
+                </div>
                 <div className="absolute top-2 left-2">
                   <Badge
                     variant="secondary"
@@ -261,38 +275,36 @@ export default function CarViewPage() {
                     {car.status}
                   </Badge>
                 </div>
+                <div className="absolute bottom-2 right-2">
+                  <span className="text-white text-xs bg-black/50 px-2 py-1 rounded">
+                    {selectedImage + 1} / {images.length}
+                  </span>
+                </div>
               </div>
 
-              {/* Image Thumbnails Carousel */}
+              {/* Image Thumbnails Grid */}
               {images.length > 1 && (
-                <Carousel className="mx-12">
-                  <CarouselContent>
-                    {images.map((image, index) => (
-                      <CarouselItem key={index} className="basis-1/4">
-                        <button
-                          onClick={() => setSelectedImage(index)}
-                          className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all ${
-                            selectedImage === index
-                              ? "border-accent2"
-                              : "border-transparent hover:border-muted-foreground/50"
-                          }`}
-                        >
-                          <Image
-                            src={image}
-                            alt={`${car.brand} ${car.model} - Image ${
-                              index + 1
-                            }`}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        </button>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
+                  {images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all ${
+                        selectedImage === index
+                          ? "border-accent2 ring-2 ring-accent2/50"
+                          : "border-transparent hover:border-muted-foreground/50"
+                      }`}
+                    >
+                      <Image
+                        src={image}
+                        alt={`${car.brand} ${car.model} - Image ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </button>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>
@@ -300,6 +312,91 @@ export default function CarViewPage() {
           {/* Order Sheet Section */}
           <OrderSheet car={car} user={user} />
         </div>
+
+        {/* Fullscreen Image Modal */}
+        <Dialog open={fullscreenOpen} onOpenChange={setFullscreenOpen}>
+          <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 bg-black/95 border-none">
+            <DialogTitle className="sr-only">
+              {car.brand} {car.model} - Image {fullscreenIndex + 1} of {images.length}
+            </DialogTitle>
+            <div className="relative w-full h-[90vh] flex items-center justify-center">
+              {/* Close Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 rounded-full"
+                onClick={() => setFullscreenOpen(false)}
+              >
+                <IconX className="h-6 w-6" />
+              </Button>
+
+              {/* Image Counter */}
+              <div className="absolute top-4 left-4 z-50 text-white bg-black/50 px-3 py-1 rounded-full text-sm">
+                {fullscreenIndex + 1} / {images.length}
+              </div>
+
+              {/* Previous Button */}
+              {images.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-4 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12"
+                  onClick={() => setFullscreenIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                >
+                  <IconChevronLeft className="h-8 w-8" />
+                </Button>
+              )}
+
+              {/* Main Image */}
+              <div className="relative w-full h-full flex items-center justify-center p-8">
+                <Image
+                  src={images[fullscreenIndex]}
+                  alt={`${car.brand} ${car.model} - Image ${fullscreenIndex + 1}`}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+
+              {/* Next Button */}
+              {images.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-4 z-50 text-white hover:bg-white/20 rounded-full h-12 w-12"
+                  onClick={() => setFullscreenIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                >
+                  <IconChevronRight className="h-8 w-8" />
+                </Button>
+              )}
+
+              {/* Thumbnail Strip */}
+              {images.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-2 bg-black/50 p-2 rounded-lg max-w-[80vw] overflow-x-auto">
+                  {images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setFullscreenIndex(index)}
+                      className={`relative w-16 h-12 rounded overflow-hidden flex-shrink-0 border-2 transition-all ${
+                        fullscreenIndex === index
+                          ? "border-accent2"
+                          : "border-transparent hover:border-white/50"
+                      }`}
+                    >
+                      <Image
+                        src={image}
+                        alt={`Thumbnail ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Secondary Content Grid: [Car Details][How to Buy] */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
