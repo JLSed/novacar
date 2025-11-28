@@ -1,7 +1,7 @@
 "use client";
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { createClient } from "../supabase/client";
-import type { User } from "@supabase/supabase-js";
+import type { User, Session } from "@supabase/supabase-js";
 
 type AuthContextType = {
   user: User | null;
@@ -13,9 +13,9 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const client = createClient();
-  const [user, setUser] = React.useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true
 
   useEffect(() => {
     const fetchAccessLevel = async (userId: string) => {
@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.error("Error fetching access level:", error);
           return null;
         }
-
         return data?.access_level;
       } catch (error) {
         console.error("Exception fetching access level:", error);
@@ -38,27 +37,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    client.auth.getSession().then(async ({ data: { session } }) => {
-      console.log("Session data:", session);
-
-      if (session?.user) {
-        setUser(session.user);
-        const accessLevel = await fetchAccessLevel(session.user.id);
-        setIsAdmin(accessLevel === 0);
-      }
-
-      setLoading(false);
-    });
-
     const { data: authListener } = client.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session: Session | null) => {
+        console.log("Auth event:", event);
         if (session?.user) {
           setUser(session.user);
           const accessLevel = await fetchAccessLevel(session.user.id);
           setIsAdmin(accessLevel === 0);
         } else {
-          setUser(null);
+          //setUser(null);
           setIsAdmin(false);
+        }
+        // Only set loading to false after the initial session is handled
+        if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+          setLoading(false);
         }
       }
     );

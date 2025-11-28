@@ -2,6 +2,7 @@
 import "./globals.css";
 import { Miss_Fajardose, Oi, Poppins } from "next/font/google";
 import { AuthProvider } from "@/lib/contexts/auth-context";
+import { Toaster } from "sonner";
 
 const oi = Oi({
   weight: "400",
@@ -33,6 +34,7 @@ export default function RootLayout({
     >
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
