@@ -47,7 +47,7 @@ export default function DashboardPage() {
   const stats = {
     carsListed: 236,
     carsSold: 48,
-    totalRevenue: "$1,248,000",
+    totalRevenue: "₱1,248,000",
     monthlyGrowth: "+12.5%",
   };
 
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                         Added 2 hours ago
                       </p>
                     </div>
-                    <p className="font-semibold text-primary">$85,000</p>
+                    <p className="font-semibold text-primary">₱85,000</p>
                   </div>
                   <div className="flex items-center gap-4 p-4 border rounded-lg">
                     <div className="flex-1">
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                         Added 5 hours ago
                       </p>
                     </div>
-                    <p className="font-semibold text-primary">$72,000</p>
+                    <p className="font-semibold text-primary">₱72,000</p>
                   </div>
                   <div className="flex items-center gap-4 p-4 border rounded-lg">
                     <div className="flex-1">
@@ -175,7 +175,7 @@ export default function DashboardPage() {
                         Added 1 day ago
                       </p>
                     </div>
-                    <p className="font-semibold text-primary">$45,000</p>
+                    <p className="font-semibold text-primary">₱45,000</p>
                   </div>
                 </div>
               </CardContent>
