@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useMemo, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { CarCard } from "@/components/car-card";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -94,14 +95,22 @@ const initialFilters: Filters = {
   sortBy: "newest",
 };
 
-export default function BrowsePage() {
+function BrowsePageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const supabase = useMemo(() => createClient(), []);
 
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Filters>(initialFilters);
+  const [filters, setFilters] = useState<Filters>(() => {
+    // Initialize with search param if present
+    const searchQuery = searchParams.get("search");
+    return {
+      ...initialFilters,
+      search: searchQuery || "",
+    };
+  });
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -147,6 +156,7 @@ export default function BrowsePage() {
         const { data, error } = await supabase
           .from("cars")
           .select("*")
+          .in("status", ["available", "sold", "reserved"])
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -900,5 +910,24 @@ export default function BrowsePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function BrowsePageLoading() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading cars...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function BrowsePage() {
+  return (
+    <Suspense fallback={<BrowsePageLoading />}>
+      <BrowsePageContent />
+    </Suspense>
   );
 }

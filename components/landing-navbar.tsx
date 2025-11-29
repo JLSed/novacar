@@ -19,7 +19,7 @@ const LandingNavbar = () => {
           <Link href={"/browse"}>BROWSE</Link>
         </button>
         <button className="hover:scale-105 text-accent2 p-xsmall">
-          <Link href={"/browse"}>ABOUT</Link>
+          <Link href={"/about"}>ABOUT</Link>
         </button>
         <Link href={"/login"}>
           <button className="hover:scale-105 text-primary p-xsmall cursor-pointer">

@@ -1,9 +1,9 @@
 'use client";';
 import { useGSAP } from "@gsap/react";
-import { time } from "console";
 import gsap from "gsap";
 import Image from "next/image";
 import { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 type props = {
   image_path: string;
@@ -14,6 +14,7 @@ type props = {
 const LandingCarCard = ({ image_path, brand_name, model_name }: props) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const router = useRouter();
 
   useGSAP(() => {
     if (!cardRef.current) return;
@@ -79,11 +80,16 @@ const LandingCarCard = ({ image_path, brand_name, model_name }: props) => {
     timelineRef.current?.reverse();
   };
 
+  const handleClick = () => {
+    router.push(`/browse?search=${encodeURIComponent(model_name)}`);
+  };
+
   return (
     <div
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
       className="relative w-lx h-full max-md:w-full aspect-video hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
     >
       <div className="flex flex-col w-full h-full items-center justify-center">

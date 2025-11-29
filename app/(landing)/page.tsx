@@ -8,8 +8,97 @@ import Image from "next/image";
 import Link from "next/link";
 import { REVIEWS } from "@/lib/constants/reviews";
 import Footer from "@/components/footer";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { createClient } from "@/lib/supabase/client";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const supabase = useMemo(() => createClient(), []);
+  const [carCount, setCarCount] = useState(0);
+  const countRef = useRef<HTMLHeadingElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const logoSectionRef = useRef<HTMLDivElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  // Fetch car count from database
+  useEffect(() => {
+    const fetchCarCount = async () => {
+      const { count, error } = await supabase
+        .from("cars")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["available", "sold", "reserved"]);
+
+      if (!error && count !== null) {
+        setCarCount(count);
+      }
+    };
+
+    fetchCarCount();
+  }, [supabase]);
+
+  // GSAP slide animation for logo cards on page load
+  useGSAP(() => {
+    if (logoSectionRef.current) {
+      const logoCards = logoSectionRef.current.querySelectorAll(".logo-card");
+
+      gsap.fromTo(
+        logoCards,
+        {
+          y: 50,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power3.out",
+          stagger: 0.08,
+          delay: 0.3,
+        }
+      );
+    }
+  }, []);
+
+  // GSAP counting animation triggered on scroll
+  useGSAP(() => {
+    if (
+      carCount > 0 &&
+      countRef.current &&
+      sectionRef.current &&
+      !hasAnimated
+    ) {
+      const counter = { value: 0 };
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top 80%",
+        onEnter: () => {
+          if (!hasAnimated) {
+            gsap.to(counter, {
+              value: carCount,
+              duration: 2,
+              ease: "power2.out",
+              onUpdate: () => {
+                if (countRef.current) {
+                  countRef.current.textContent = Math.round(
+                    counter.value
+                  ).toString();
+                }
+              },
+              onComplete: () => {
+                setHasAnimated(true);
+              },
+            });
+          }
+        },
+      });
+    }
+  }, [carCount, hasAnimated]);
+
   return (
     <div className="bg-background flex flex-col items-center justify-center gap-large max-md:gap-medium relative overflow-hidden">
       {/* Background Image */}
@@ -40,17 +129,20 @@ export default function Home() {
           <button className="shining_button w-full">BROWSE &#8594;</button>
         </Link>
       </section>
-      <section className="max-w-desktop grid grid-cols-8 w-full gap-small place-items-center max-md:grid-cols-2 ">
-        <LogoCard image_path="/toyota_logo.png" />
-        <LogoCard image_path="/nissan_logo.png" />
-        <LogoCard image_path="/bmw_logo.png" />
-        <LogoCard image_path="/ford_logo.png" />
-        <LogoCard image_path="/acura_logo.png" />
-        <LogoCard image_path="/subaru_logo.png" />
-        <LogoCard image_path="/ferrari_logo.png" />
-        <LogoCard image_path="/mazda_logo.png" />
+      <section
+        ref={logoSectionRef}
+        className="max-w-desktop grid grid-cols-8 w-full gap-small place-items-center max-md:grid-cols-2 "
+      >
+        <LogoCard image_path="/toyota_logo.png" className="logo-card" />
+        <LogoCard image_path="/nissan_logo.png" className="logo-card" />
+        <LogoCard image_path="/bmw_logo.png" className="logo-card" />
+        <LogoCard image_path="/ford_logo.png" className="logo-card" />
+        <LogoCard image_path="/acura_logo.png" className="logo-card" />
+        <LogoCard image_path="/subaru_logo.png" className="logo-card" />
+        <LogoCard image_path="/ferrari_logo.png" className="logo-card" />
+        <LogoCard image_path="/mazda_logo.png" className="logo-card" />
       </section>
-      <section className="max-w-desktop w-full relative">
+      <section ref={sectionRef} className="max-w-desktop w-full  relative">
         <div className="absolute left-0 top-0 inset-0 w-3xl h-24 max-md:w-sm">
           <AspectRatio ratio={24 / 10} className="">
             <Image
@@ -61,13 +153,17 @@ export default function Home() {
             />
           </AspectRatio>
         </div>
-        <div className="flex flex-col place-self-end max-w-[784px] max-md:max-w-[392px]">
-          <h2 className="text-primary text-right">
-            <span className="text-accent2"> Explore</span> Our Curated
-            Collection
-          </h2>
-          <div className="bg-primary flex gap-3 items-center justify-end py-4 px-2 ">
-            <h1 className="text-accent2 z-10">236</h1>
+        <div className="flex flex-col w-full items-end  ">
+          <div className="w-full max-w-[784px] max-md:max-w-[392px]">
+            <h2 className="text-primary text-right">
+              <span className="text-accent2"> Explore</span> Our Curated
+              Collection
+            </h2>
+          </div>
+          <div className="bg-primary w-full flex gap-3 items-center justify-end py-4 px-2 ">
+            <h1 ref={countRef} className="text-accent2 z-10">
+              0
+            </h1>
             <h4 className="text-accent2 z-10">Listed Cars</h4>
           </div>
         </div>

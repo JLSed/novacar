@@ -3,11 +3,12 @@ import Image from "next/image";
 
 type props = {
   image_path: string;
+  className?: string;
 };
 
-const LogoCard = ({ image_path }: props) => {
+const LogoCard = ({ image_path, className }: props) => {
   return (
-    <div className="inset-0 w-32 h-24">
+    <div className={`inset-0 w-32 h-24 ${className || ""}`}>
       <AspectRatio ratio={1 / 1}>
         <Image
           src={image_path}
